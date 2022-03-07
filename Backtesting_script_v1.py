@@ -15,19 +15,20 @@ import base64
 
 warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
 
+
 def user_inputs():
     def time(time_str):
-        if time_str.find(':00')==5:
-            m= str(int(time_str.split(':')[1])-1)
-            h=time_str.split(':')[0]
-            s= '59'
-            time_str=h+':'+ m +':'+ s
+        if time_str.find(':00') == 5:
+            m = str(int(time_str.split(':')[1]) - 1)
+            h = time_str.split(':')[0]
+            s = '59'
+            time_str = h + ':' + m + ':' + s
             return time_str
-        elif time_str.find('00:00')==3:
-            m= '59'
-            h=str(int(time_str.split(':')[0])-1)
-            s= '59'
-            time_str=h+':'+ m +':'+ s
+        elif time_str.find('00:00') == 3:
+            m = '59'
+            h = str(int(time_str.split(':')[0]) - 1)
+            s = '59'
+            time_str = h + ':' + m + ':' + s
             return time_str
         else:
             return time_str
@@ -40,7 +41,7 @@ def user_inputs():
     # Trade #
     st.subheader('Trade')
     ###########
-    sl,sp,en,ex,hp = st.columns([1,1,2,2,1])
+    sl, sp, en, ex, hp = st.columns([1, 1, 2, 2, 1])
     ###### stop loss
     with sl:
         st_loss = st.text_input('Stop Loss (%)', '25%')
@@ -56,14 +57,14 @@ def user_inputs():
     with hp:
         hedging_option = st.selectbox('Delta Hedging?', ('No', 'Yes'))
 
-    st_loss_pct = int(str(st_loss).split('%')[0])/100
+    st_loss_pct = int(str(st_loss).split('%')[0]) / 100
 
     ######### Trailing Profit position
     # new_st_loss = st.sidebar.text_input('Enter stop loss which is near to above stop loss', '0%')
     # new_st_loss_pct = int(str(new_st_loss).split('%')[0])/100
     # new_st_loss_lot = st.sidebar.selectbox('Select loss position', ('Half', 'Double'))
 
-    st_profit_pct = int(str(st_profit).split('%')[0])/100
+    st_profit_pct = int(str(st_profit).split('%')[0]) / 100
 
     ######### Trailing Profit position
     # new_st_profit = st.sidebar.text_input('Enter stop profit which is near to above stop profit', '0%')
@@ -75,24 +76,25 @@ def user_inputs():
     # else:
     #     st.error('Enter the trailing SL % and trailing PB % less than SL% and PB% respectively')
 
-    # Entry Time #
-    if (int(entry_time_str.split(':')[0]) > 8) | (int(entry_time_str.split(':')[0]) < 16):
-        entry_time = datetime.strptime(entry_time_str, "%H:%M:%S").time()
-    else:
-        st.error("Enter the time in given format and in 12 hours format and between 08:00:00 and 16:00:00")
+    # # Entry Time #
+    # if (int(entry_time_str.split(':')[0]) > 8) | (int(entry_time_str.split(':')[0]) < 16):
+    #     entry_time = datetime.strptime(entry_time_str, "%H:%M:%S").time()
+    # else:
+    #     st.error("Enter the time in given format and in 12 hours format and between 08:00:00 and 16:00:00")
 
+    # # Exit Time #
+    # if ((int(exit_time_str.split(':')[0]) > 8) | (int(exit_time_str.split(':')[0]) < 16)):
+    #     exit_time = datetime.strptime(time(exit_time_str), "%H:%M:%S").time()
+    # else:
+    #     st.error("Enter the time in in given format and in 12 hours format and between 09:00:00 and 16:00:00")
 
-    # Exit Time #
-    if ((int(exit_time_str.split(':')[0]) > 8) | (int(exit_time_str.split(':')[0]) < 16)):
-        exit_time = datetime.strptime(time(exit_time_str), "%H:%M:%S").time()
-    else:
-        st.error("Enter the time in in given format and in 12 hours format and between 09:00:00 and 16:00:00")
-
+    entry_time = datetime.strptime(entry_time_str, "%H:%M:%S").time()
+    exit_time = datetime.strptime(time(exit_time_str), "%H:%M:%S").time()
     start_time = datetime.strptime('09:15:59', "%H:%M:%S").time()
     end_time = datetime.strptime('15:30:59', "%H:%M:%S").time()
 
-    if (start_time <= entry_time < exit_time <= end_time)==False:
-        st.error('Error: time should be between 9:16:00 and 15:30:00')
+    if (start_time <= entry_time < exit_time <= end_time) == False:
+        st.error('Error: Time should be between 9:16:00 and 15:30:00')
 
         # st.success('Stop Loss: `%s` \n Stop Profit: `%s` \n Start date: `%s` \n End date: `%s`' % (st_loss,st_profit,entry_time, exit_time))
     # else:
@@ -107,41 +109,45 @@ def user_inputs():
         sqr_off_position_pct = int(str(sqr_off_position).split('%')[0]) / 100
         with col2:
             delta_position = st.text_input('What % change in Nifty, look at the delta', '0%')
-        delta_pct = int(str(delta_position).split('%')[0])/100
+        delta_pct = int(str(delta_position).split('%')[0]) / 100
         st.text('If Delta (D) > 0 , "Sell Call"\n\nIf Delta (D) < 0 , "Sell Put"')
 
-    # store user input  in dictionary #
-        trade_keys = ['st_loss', 'st_profit', 'entry_time_str', 'entry_time', 'exit_time_str', 'exit_time','end_time','hedging_option','sqr_off_position_pct','delta_pct']
-        trade_values = [ st_loss_pct, st_profit_pct, entry_time_str, entry_time, exit_time_str, exit_time,end_time,hedging_option,sqr_off_position_pct,delta_pct]
+        # store user input  in dictionary #
+        trade_keys = ['st_loss', 'st_profit', 'entry_time_str', 'entry_time', 'exit_time_str', 'exit_time', 'end_time',
+                      'hedging_option', 'sqr_off_position_pct', 'delta_pct']
+        trade_values = [st_loss_pct, st_profit_pct, entry_time_str, entry_time, exit_time_str, exit_time, end_time,
+                        hedging_option, sqr_off_position_pct, delta_pct]
         trade_n_dict = dict(zip(trade_keys, trade_values))
         # print(trade_n_dict)
     else:
-        trade_keys = ['st_loss', 'st_profit', 'entry_time_str', 'entry_time', 'exit_time_str', 'exit_time','end_time','hedging_option']
-        trade_values = [ st_loss_pct, st_profit_pct, entry_time_str, entry_time, exit_time_str, exit_time, end_time,hedging_option]
+        trade_keys = ['st_loss', 'st_profit', 'entry_time_str', 'entry_time', 'exit_time_str', 'exit_time', 'end_time',
+                      'hedging_option']
+        trade_values = [st_loss_pct, st_profit_pct, entry_time_str, entry_time, exit_time_str, exit_time, end_time,
+                        hedging_option]
         trade_n_dict = dict(zip(trade_keys, trade_values))
 
     # Legs #
     st.subheader('Legs')
-    n_legs = int(st.selectbox('How many legs you want to execute?',(2,1)))
+    n_legs = int(st.selectbox('How many legs you want to execute?', (2, 1)))
     legs = {}
     ### add key for dublicate inputs
     for i in range(n_legs):
-        name_leg_key = 'Leg'+str(i+1)
-        lg,inst, act, opt, strk, exp, lt = st.columns([2,4,3,3,3,4,3])
+        name_leg_key = 'Leg' + str(i + 1)
+        lg, inst, act, opt, strk, exp, lt = st.columns([2, 4, 3, 3, 3, 4, 3])
         with lg:
             st.markdown(name_leg_key)
         with inst:
-            instrument = st.selectbox('Symbol', ('NIFTY', 'BANK NIFTY'),key = 'a1'+str(i+1))
+            instrument = st.selectbox('Symbol', ('NIFTY', 'BANK NIFTY'), key='a1' + str(i + 1))
         with act:
-            action = st.selectbox('Action', ('BUY', 'SELL'),key = 'a'+str(i+1))
-        if name_leg_key =='Leg1':
+            action = st.selectbox('Action', ('BUY', 'SELL'), key='a' + str(i + 1))
+        if name_leg_key == 'Leg1':
             with opt:
-                option_type = st.selectbox('Option Type', ('CE', 'PE'),key='b'+str(i+1))
-        elif name_leg_key =='Leg2':
+                option_type = st.selectbox('Option Type', ('CE', 'PE'), key='b' + str(i + 1))
+        elif name_leg_key == 'Leg2':
             with opt:
-                option_type = st.selectbox('Option Type', ('PE', 'CE'),key='b'+str(i+1))
+                option_type = st.selectbox('Option Type', ('PE', 'CE'), key='b' + str(i + 1))
         with strk:
-            strike_given = st.text_input('Strike', 'ATM',key='c'+str(i+1))  # user I/O as well as ATM
+            strike_given = st.text_input('Strike', 'ATM', key='c' + str(i + 1))  # user I/O as well as ATM
         # expiry on strike is condition based so
         if strike_given.upper() == 'ATM':
             strike_given = 'ATM'
@@ -151,27 +157,28 @@ def user_inputs():
         else:
             strike_given = int(strike_given)
             with exp:
-                expiry_str = str(st.date_input('Expiry Date',key='e'+str(i+1)))  # user I/O
+                expiry_str = str(st.date_input('Expiry Date', key='e' + str(i + 1)))  # user I/O
             expiry = datetime.strptime(expiry_str, "%Y-%m-%d").date()
             with lt:
-                lot_size =st.text_input('Lot',"",  key='f' + str(i + 1))
+                lot_size = st.text_input('Lot', "", key='f' + str(i + 1))
 
         try:
             No_of_lots = int(lot_size)
-
+            path = 'F:/Stock Marketing/data/NIFTY/Test_code/'
+            leg_keys = ['instrument', 'action', 'option_type', 'strike_given', 'expiry', 'No_of_lots', 'path']
+            leg_values = [instrument, action, option_type, strike_given, expiry, No_of_lots, path]
+            leg_n_dict = dict(zip(leg_keys, leg_values))
+            legs[name_leg_key] = leg_n_dict
         except:
             st.error("Please make sure that you have entered all inputs")
             st.stop()
-    # store in Dictionary
-        path = 'F:/Stock Marketing/data/NIFTY/Test_code/'
-        leg_keys = ['instrument', 'action', 'option_type', 'strike_given', 'expiry', 'No_of_lots', 'path']
-        leg_values = [instrument, action, option_type, strike_given, expiry, No_of_lots, path]
-        leg_n_dict = dict(zip(leg_keys, leg_values))
-        legs[name_leg_key] = leg_n_dict
+        # store in Dictionary
+
         # st.success('#Legs\n\nInstrument: `%s`\n Action:  `%s`\n Option Type:  `%s`\n Strike:  `%s`\n Expiry: `%s`\n No. of Lots: `%s`' % (instrument,action,option_type,strike_given,expiry,No_of_lots))
     st.success("If you have chosen 'ATM' strike then expiry will be 'Nearest Weekly'")
-        # print(legs)
+    # print(legs)
     return legs, trade_n_dict
+
 
 def data_file_df_creation(legs):
     for i in legs.items():
@@ -414,7 +421,7 @@ def legwise_output_file_generation(df_leg, entry_time, atm_future_price, legs_it
             call_delta = DeltaC(atm_future_price, row['Strike'], r, q, row['Days_Left_to_Expiry'], call_vol)
             df_leg.loc[index, 'delta_call'] = call_delta
             if row['Action'] == 'SELL':
-                delta_lots = (-call_delta*legs_items[1]['No_of_lots'])
+                delta_lots = (-call_delta * legs_items[1]['No_of_lots'])
                 df_leg.loc[index, 'delta_call*lots'] = delta_lots
             else:
                 delta_lots = (call_delta * legs_items[1]['No_of_lots'])
@@ -424,7 +431,7 @@ def legwise_output_file_generation(df_leg, entry_time, atm_future_price, legs_it
             put_delta = DeltaP(atm_future_price, row['Strike'], r, q, row['Days_Left_to_Expiry'], put_vol)
             df_leg.loc[index, 'delta_put'] = put_delta
             if row['Action'] == 'SELL':
-                delta_lots = (-put_delta*legs_items[1]['No_of_lots'])
+                delta_lots = (-put_delta * legs_items[1]['No_of_lots'])
                 df_leg.loc[index, 'delta_put*lots'] = delta_lots
             else:
                 delta_lots = (put_delta * legs_items[1]['No_of_lots'])
@@ -432,7 +439,7 @@ def legwise_output_file_generation(df_leg, entry_time, atm_future_price, legs_it
         else:
             pass
 
-    df_leg['Change_in_asset'] = abs(df_leg['Current_Asset_Futures_Price']-df_leg['ATM_Entry'])
+    df_leg['Change_in_asset'] = abs(df_leg['Current_Asset_Futures_Price'] - df_leg['ATM_Entry'])
     df_leg['Change_in_asset(%)'] = round((df_leg['Change_in_asset'] / atm_future_price) * 100, 2)
     df_leg.reset_index(drop=True, inplace=True)
     # print(df_leg.head(7))
@@ -441,7 +448,8 @@ def legwise_output_file_generation(df_leg, entry_time, atm_future_price, legs_it
     return df_leg
 
 
-def n_leg_output_generation(output_dfs, atm_future_price, st_loss, st_profit, legs_items, leg_file_name, output_file_name):
+def n_leg_output_generation(output_dfs, atm_future_price, st_loss, st_profit, legs_items, leg_file_name,
+                            output_file_name):
     output_df = pd.concat(output_dfs, axis=1)
     output_dfs.clear()
     print(output_df['Entry_Price'])
@@ -501,7 +509,7 @@ def end_results_normalization(n_leg_df, atm_future_price, futures_data):
 def execution_of_legs_atm_nw(legs):
     data_file_df = data_file_df_creation(legs)
     output_file_name_final = ''
-
+    final_exit_row_columns=[]
     trade_output_dfs = []
     for index, row in data_file_df.iterrows():
         df = pd.read_csv(row['link'])
@@ -519,18 +527,22 @@ def execution_of_legs_atm_nw(legs):
             output_dfs.append(df_leg_new)
             if len(output_dfs) == len(legs):
                 output_file_name_final = output_file_name_final + '.csv'
-                n_leg_df = n_leg_output_generation(output_dfs, atm_future_price, st_loss, st_profit, legs_items, leg_file_name, output_file_name)
+                n_leg_df = n_leg_output_generation(output_dfs, atm_future_price, st_loss, st_profit, legs_items,
+                                                   leg_file_name, output_file_name)
                 n_leg_df = stop_conditions_applied(n_leg_df, current_file_date, exit_time)
                 print(output_file_name_final)
                 n_leg_df.to_csv(output_file_name_final, index=False)
                 output_file_name_final = ''
-                n_leg_df, final_exit_row, final_exit_row_columns = end_results_normalization(n_leg_df, atm_future_price, futures_data)
+                n_leg_df, final_exit_row, final_exit_row_columns = end_results_normalization(n_leg_df, atm_future_price,
+                                                                                             futures_data)
                 trade_output_dfs.append(final_exit_row)
-    # print(len(final_exit_row_columns))
+
+    print(final_exit_row_columns)
     trade_output_df = pd.DataFrame(trade_output_dfs, columns=final_exit_row_columns)
     # trade_output_df.to_csv('Normalized_Code_Output_for_all_days_v2.csv')
     return trade_output_df
     # trade_output_dfs.append(final_exit_row)
+
 
 def df_column_uniquify(df):
     df_columns = df.columns
@@ -538,7 +550,7 @@ def df_column_uniquify(df):
     for item in df_columns:
         counter = 0
         newitem = item
-#         print(newitem,item)
+        #         print(newitem,item)
         while newitem in new_columns:
             counter += 1
             # print(counter)
@@ -546,6 +558,8 @@ def df_column_uniquify(df):
         new_columns.append(newitem)
     df.columns = new_columns
     return df
+
+
 if __name__ == '__main__':
     # legs = {'Leg 1': {'instrument': 'NIFTY', 'action': 'SELL', 'option_type': 'CE', 'strike_given': 'ATM',
     #                   'expiry': 'Nearest Weekly', 'No_of_lots': 1,
@@ -556,7 +570,7 @@ if __name__ == '__main__':
 
     # st.subheader('My sub')
     leg, trade = user_inputs()
-    print(leg,trade)
+    print(leg, trade)
     legs = leg
     entry_time = trade['entry_time']
     exit_time = trade['exit_time']
@@ -572,7 +586,7 @@ if __name__ == '__main__':
     if st.button('Add Position'):
         with st.spinner("Backtesting data..."):
             output = execution_of_legs_atm_nw(legs)
-        df=df_column_uniquify(output)
+        df = df_column_uniquify(output)
         print(df)
         st.markdown("Resulted Output:")
         st.dataframe(df)
@@ -580,11 +594,9 @@ if __name__ == '__main__':
         st.line_chart(df['Total PnL'])
         st.success('Done')
 
-
     # # Data of recent days
     # st.write('Recent data ')
     # st.dataframe(output.tail(10))
     # # execution_of_legs_atm_nw(legs)
     end = time.perf_counter()
     print(end - start)
-
