@@ -591,7 +591,7 @@ if __name__ == '__main__':
         st.markdown("Resulted Output:")
         st.dataframe(df)
         st.write('Total Profit and Loss')
-        st.line_chart(df['Total PnL'])
+#         st.line_chart(df['Total PnL'])
         st.success('Done')
 
     # # Data of recent days
