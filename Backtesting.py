@@ -509,7 +509,7 @@ def end_results_normalization(n_leg_df, atm_future_price, futures_data):
 def execution_of_legs_atm_nw(legs):
     data_file_df = data_file_df_creation(legs)
     output_file_name_final = ''
-#     final_exit_row_columns=[]
+    final_exit_row_columns=[]
     trade_output_dfs = []
     for index, row in data_file_df.iterrows():
         df = pd.read_csv(row['link'])
@@ -537,7 +537,7 @@ def execution_of_legs_atm_nw(legs):
                                                                                              futures_data)
                 trade_output_dfs.append(final_exit_row)
 
-#     print(final_exit_row_columns)
+    print(final_exit_row_columns)
     trade_output_df = pd.DataFrame(trade_output_dfs, columns=final_exit_row_columns)
     # trade_output_df.to_csv('Normalized_Code_Output_for_all_days_v2.csv')
     return trade_output_df
