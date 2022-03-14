@@ -164,7 +164,9 @@ def user_inputs():
 
         try:
             No_of_lots = int(lot_size)
-            path = '/Streamlit_app/'
+            directory = os.getcwd()
+#             print(directory)
+            path = directory+'\\Test_code\\'
             leg_keys = ['instrument', 'action', 'option_type', 'strike_given', 'expiry', 'No_of_lots', 'path']
             leg_values = [instrument, action, option_type, strike_given, expiry, No_of_lots, path]
             leg_n_dict = dict(zip(leg_keys, leg_values))
@@ -591,7 +593,12 @@ if __name__ == '__main__':
         st.markdown("Resulted Output:")
         st.dataframe(df)
         st.write('Total Profit and Loss')
-#         st.line_chart(df['Total PnL'])
+        df_PnL = df[['Date','Total PnL']]
+        # Convert datetime from datetime64[ns] to string type
+        df_PnL['Date'] = df_PnL['Date'].astype(str)
+        df_PnL = df_PnL.set_index('Date')
+        # st.line_chart(df1)
+        st.line_chart(df_PnL['Total PnL'].cumsum(skipna = False))
         st.success('Done')
 
     # # Data of recent days
