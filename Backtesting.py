@@ -595,13 +595,13 @@ if __name__ == '__main__':
         print(df)
         st.markdown("Resulted Output:")
         st.dataframe(df)
-        st.write('Total Profit and Loss')
-        df_PnL = df[['Date','Total PnL']]
-        # Convert datetime from datetime64[ns] to string type
-        df_PnL['Date'] = df_PnL['Date'].astype(str)
-        df_PnL = df_PnL.set_index('Date')
-        # st.line_chart(df1)
-        st.line_chart(df_PnL['Total PnL'].cumsum(skipna = False))
+#         st.write('Total Profit and Loss')
+#         df_PnL = df[['Date','Total PnL']]
+#         # Convert datetime from datetime64[ns] to string type
+#         df_PnL['Date'] = df_PnL['Date'].astype(str)
+#         df_PnL = df_PnL.set_index('Date')
+#         # st.line_chart(df1)
+#         st.line_chart(df_PnL['Total PnL'].cumsum(skipna = False))
         st.success('Done')
 
     # # Data of recent days
