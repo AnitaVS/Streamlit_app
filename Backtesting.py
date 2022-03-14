@@ -12,6 +12,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
+import os
 
 warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
 
@@ -165,10 +166,8 @@ def user_inputs():
         try:
             No_of_lots = int(lot_size)
             directory = os.getcwd()
-#             print(directory)
-            path = directory     
-            #+'\\Test_code\\'
-            print(path)
+            print(directory)
+            path = 'F:/Stock Marketing/data/NIFTY/Test_code/'
             leg_keys = ['instrument', 'action', 'option_type', 'strike_given', 'expiry', 'No_of_lots', 'path']
             leg_values = [instrument, action, option_type, strike_given, expiry, No_of_lots, path]
             leg_n_dict = dict(zip(leg_keys, leg_values))
@@ -186,7 +185,8 @@ def user_inputs():
 
 def data_file_df_creation(legs):
     for i in legs.items():
-        # print(i)
+        print(i,'####################')
+        glob(i[1]['path'])
         way = pd.DataFrame(glob(i[1]['path'] + '*'), columns=['link'])
         way['data_date'] = way['link'].apply(lambda x: x.split('_')[-1].split('.')[0])
         way['data_date'] = way['data_date'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
