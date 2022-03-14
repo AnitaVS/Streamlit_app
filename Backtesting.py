@@ -167,7 +167,8 @@ def user_inputs():
             No_of_lots = int(lot_size)
             directory = os.getcwd()
             print(directory)
-            path = 'F:/Stock Marketing/data/NIFTY/Test_code/'
+            path = directory + "\\Test_code\\"                         #'F:/Stock Marketing/data/NIFTY/Test_code/'
+            print(path)
             leg_keys = ['instrument', 'action', 'option_type', 'strike_given', 'expiry', 'No_of_lots', 'path']
             leg_values = [instrument, action, option_type, strike_given, expiry, No_of_lots, path]
             leg_n_dict = dict(zip(leg_keys, leg_values))
