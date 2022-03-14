@@ -200,6 +200,11 @@ def data_format_change(df):
     df['Expiry'] = df['Expiry'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
     df['Date'] = df['Date'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d').date())
     df['Time'] = df['Time'].apply(lambda x: datetime.strptime(x, '%H:%M:%S').time())
+        for index, row in df.iterrows():
+        date_time = pd.Timestamp.combine(row['Date'],row['Time'])
+        # print(date_time,type(date_time))
+        df.loc[index, 'Date_Time'] = date_time
+
     return df
 
 
