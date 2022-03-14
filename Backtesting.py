@@ -416,14 +416,38 @@ def legwise_output_file_generation(df_leg, entry_time, atm_future_price, legs_it
                              -(df_leg['Close'] - df_leg['Entry_Price']))
     # print(df_leg[['Action','PnL']])
     df_leg['PnL*Lots'] = df_leg['PnL'] * legs_items[1]['No_of_lots']
-    df_leg['Days_Left_to_Expiry'] = ((df_leg['Expiry'].iloc[0]) - (df_leg['Date'].iloc[0])).days / 365
+    # df_leg['Days_Left_to_Expiry'] = ((df_leg['Expiry'].iloc[0]) - (df_leg['Date'].iloc[0])).days / 365
+
+    # calculate time_left_to_expiry for each minute and calculate current_asset_price
+    market_open_time_str = '09:15:59'
+    market_open_time = datetime.strptime(market_open_time_str, "%H:%M:%S").time()
+
     for index, row in df_leg.iterrows():
+        # @@calculate time_left_to_expiry for each minute
+        minutes_passed_market_open_time = pd.Timestamp.combine(row['Date'], market_open_time)
+        # print('Market Open Time: ', minutes_passed_market_open_time, 'Current_Time: ', row['Date_Time'])
+        # print('Minutes Passed: ', (row['Date_Time'] - minutes_passed_market_open_time).total_seconds()/60)
+        # print('Time Fraction (divided by 375): ', ((row['Date_Time'] - minutes_passed_market_open_time).total_seconds()/60)/375)
+
+        diff_expiry_current_date_days = (row['Expiry'] - row['Date_Time'].date()).days + 1
+        # print('Expiry: ', row['Expiry'])
+        # print('Days Left from Start of the day: ', diff_expiry_current_date_days)
+        time_fraction = ((row['Date_Time'] - minutes_passed_market_open_time).total_seconds() / 60) / 375
+        time_left_to_expiry = (diff_expiry_current_date_days - (time_fraction))
+        # print('Time_Left_to_Expiry: ', time_left_to_expiry)
+        df_leg.loc[index, 'Time_Left_to_Expiry'] = time_left_to_expiry
+
+        # @@calculate current_asset_price
         current_time = row['Time']
         current_asset_price = futures_data[futures_data['Time'] == current_time]['Close'].iloc[0]
         df_leg.loc[index, 'Current_Asset_Futures_Price'] = current_asset_price
+
+    for index, row in df_leg.iterrows():
         if row['Type'] == 'CE':
-            call_vol = call_IV(atm_future_price, row['Strike'], r, q, row['Days_Left_to_Expiry'], row['Close'])
-            call_delta = DeltaC(atm_future_price, row['Strike'], r, q, row['Days_Left_to_Expiry'], call_vol)
+            call_vol = call_IV(row['Current_Asset_Futures_Price'], row['Strike'], r, q, row['Time_Left_to_Expiry'],
+                               row['Close'])
+            call_delta = DeltaC(row['Current_Asset_Futures_Price'], row['Strike'], r, q, row['Time_Left_to_Expiry'],
+                                call_vol)
             df_leg.loc[index, 'delta_call'] = call_delta
             if row['Action'] == 'SELL':
                 delta_lots = (-call_delta * legs_items[1]['No_of_lots'])
@@ -432,8 +456,10 @@ def legwise_output_file_generation(df_leg, entry_time, atm_future_price, legs_it
                 delta_lots = (call_delta * legs_items[1]['No_of_lots'])
                 df_leg.loc[index, 'delta_call*lots'] = delta_lots
         elif row['Type'] == 'PE':
-            put_vol = put_IV(atm_future_price, row['Strike'], r, q, row['Days_Left_to_Expiry'], row['Close'])
-            put_delta = DeltaP(atm_future_price, row['Strike'], r, q, row['Days_Left_to_Expiry'], put_vol)
+            put_vol = put_IV(row['Current_Asset_Futures_Price'], row['Strike'], r, q, row['Time_Left_to_Expiry'],
+                             row['Close'])
+            put_delta = DeltaP(row['Current_Asset_Futures_Price'], row['Strike'], r, q, row['Time_Left_to_Expiry'],
+                               put_vol)
             df_leg.loc[index, 'delta_put'] = put_delta
             if row['Action'] == 'SELL':
                 delta_lots = (-put_delta * legs_items[1]['No_of_lots'])
@@ -444,8 +470,8 @@ def legwise_output_file_generation(df_leg, entry_time, atm_future_price, legs_it
         else:
             pass
 
-    df_leg['Change_in_asset'] = abs(df_leg['Current_Asset_Futures_Price'] - df_leg['ATM_Entry'])
-    df_leg['Change_in_asset(%)'] = round((df_leg['Change_in_asset'] / atm_future_price) * 100, 2)
+    df_leg['Change_in_asset'] = abs(df_leg['Current_Asset_Futures_Price'] - df_leg['Strike'])
+    df_leg['Change_in_asset(%)'] = round((df_leg['Change_in_asset'] / df_leg['Strike']) * 100, 2)
     df_leg.reset_index(drop=True, inplace=True)
     # print(df_leg.head(7))
     print(df_leg.shape)
