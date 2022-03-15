@@ -184,7 +184,7 @@ def user_inputs():
     # print(legs)
     
     ### Activate AI Fund Manager ###
-    al_options = st.selectbox('Activate AI Fund Manager', ('No', 'With Manual Approval','Automatic'))
+#     al_options = st.selectbox('Activate AI Fund Manager', ('No', 'With Manual Approval','Automatic'))
     
     return legs, trade_n_dict
 
