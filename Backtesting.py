@@ -56,7 +56,7 @@ def user_inputs():
     with ex:
         exit_time_str = time(st.text_input('Exit time (hh:mm:ss):', '15:20:00'))
     with hp:
-        hedging_option = st.selectbox('Delta Hedging?', ('No', 'Yes'))
+        hedging_option = st.selectbox('Delta Hedging', ('No', 'Yes'))
 
     st_loss_pct = int(str(st_loss).split('%')[0]) / 100
 
@@ -182,6 +182,10 @@ def user_inputs():
         # st.success('#Legs\n\nInstrument: `%s`\n Action:  `%s`\n Option Type:  `%s`\n Strike:  `%s`\n Expiry: `%s`\n No. of Lots: `%s`' % (instrument,action,option_type,strike_given,expiry,No_of_lots))
     st.success("If you have chosen 'ATM' strike then expiry will be 'Nearest Weekly'")
     # print(legs)
+    
+    ### Activate AI Fund Manager ###
+    al_options = st.selectbox('Activate AI Fund Manager', ('No', 'With Manual Approval','Automatic'))
+    
     return legs, trade_n_dict
 
 
